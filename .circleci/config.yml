@@ -24,7 +24,6 @@ jobs:
       - run: git config user.name "CircleCI"
       - run: git checkout -b release
       - run: npm version patch
-      - run: git commit -m "CI Deploy"
       - run: git push -u origin release
 
 workflows:
