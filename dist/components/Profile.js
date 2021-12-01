@@ -9,13 +9,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireWildcard(require("react"));
+var _react = _interopRequireDefault(require("react"));
 
 var _ = require("..");
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -26,33 +24,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 const Profile = (_ref) => {
   let {
     profile,
+    edit,
+    toggleEdit,
     onChange,
+    saveState,
     ui
   } = _ref;
-  const [edit, toggleEdit] = (0, _react.useState)(false);
-  return /*#__PURE__*/_react.default.createElement(_.HeaderBar, null, "Hello from Profile", /*#__PURE__*/_react.default.createElement(_.Spacer, null), /*#__PURE__*/_react.default.createElement(ui.Button, null, "Save"));
-  const [thing, setThing] = (0, _react.useState)();
-  const {
-    queue,
-    saveFromQ,
-    updateQueue
-  } = (0, _react.useContext)(_.SaveState);
-  (0, _react.useEffect)(() => {
-    if (!profile) return;
-    setThing(profile.thing);
-  }, [profile]);
 
-  function update(field) {
+  function updateField(field) {
     return (_ref2) => {
       let {
         target
       } = _ref2;
+      let t = (0, _.setAttr)(profile.thing, _.profileStruct[field], target.value);
+      saveState.updateQueue((0, _.addToUpdateQueue)(saveState.queue, t));
       onChange(_objectSpread(_objectSpread({}, profile), {}, {
+        thing: t,
         [field]: target.value
       }));
-      let t = (0, _.setAttr)(thing, _.profileStruct[field], target.value);
-      updateQueue((0, _.addToUpdateQueue)(queue, t));
-      setThing(t);
     };
   }
 
@@ -61,14 +50,14 @@ const Profile = (_ref) => {
       target
     } = _ref3;
     let [firstName = '', lastName = ''] = target.value.split(' ');
+    let t = (0, _.setAttr)(profile.thing, _.profileStruct['firstName'], firstName);
+    t = (0, _.setAttr)(t, _.profileStruct['lastName'], lastName);
+    saveState.updateQueue((0, _.addToUpdateQueue)(saveState.queue, t));
     onChange(_objectSpread(_objectSpread({}, profile), {}, {
+      thing: t,
       firstName,
       lastName
     }));
-    let t = (0, _.setAttr)(thing, _.profileStruct['firstName'], firstName);
-    t = (0, _.setAttr)(t, _.profileStruct['lastName'], lastName);
-    setThing(t);
-    updateQueue((0, _.addToUpdateQueue)(queue, t));
   }
 
   if (!profile) return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null);
@@ -98,13 +87,12 @@ const Profile = (_ref) => {
     onChange: updateName
   }), /*#__PURE__*/_react.default.createElement("p", null, profile.nickname)), /*#__PURE__*/_react.default.createElement(_.Spacer, null), /*#__PURE__*/_react.default.createElement(_.Column, {
     justify: "flex-end"
-  }, /*#__PURE__*/_react.default.createElement(Link, {
-    to: "/"
   }, /*#__PURE__*/_react.default.createElement(ui.IconButton, {
-    color: "inherit"
+    color: "inherit",
+    href: "https://kitchen.wkgreen.dev"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "material-icons large"
-  }, "request_quote"))))), /*#__PURE__*/_react.default.createElement(_.Column, {
+  }, "kitchen")))), /*#__PURE__*/_react.default.createElement(_.Column, {
     align: "center"
   }, /*#__PURE__*/_react.default.createElement(ui.Input, {
     type: "text",
@@ -115,7 +103,7 @@ const Profile = (_ref) => {
     }, /*#__PURE__*/_react.default.createElement("span", {
       className: "material-icons"
     }, "account_circle")),
-    onChange: update("nickname")
+    onChange: updateField("nickname")
   }), /*#__PURE__*/_react.default.createElement(ui.Input, {
     type: "text",
     placeholder: "email",
@@ -125,11 +113,11 @@ const Profile = (_ref) => {
     }, /*#__PURE__*/_react.default.createElement("span", {
       className: "material-icons"
     }, "email")),
-    onChange: update("email")
-  }), !!queue.length && /*#__PURE__*/_react.default.createElement(_.SaveButton, null, /*#__PURE__*/_react.default.createElement(ui.Button, {
+    onChange: updateField("email")
+  }), !!saveState.queue.length && /*#__PURE__*/_react.default.createElement(_.SaveButton, null, /*#__PURE__*/_react.default.createElement(ui.Button, {
     variant: "contained",
     color: "secondary",
-    onClick: saveFromQ
+    onClick: saveState.saveFromQ
   }, "Save"))));
 };
 

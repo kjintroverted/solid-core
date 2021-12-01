@@ -93,7 +93,7 @@ function getThings(dataset) {
 
 async function loadThing(url, struct) {
   if (!(0, _solidClientAuthnBrowser.getDefaultSession)().info.isLoggedIn) {
-    (0, _solidClientAuthnBrowser.logout)();
+    await (0, _solidClientAuthnBrowser.logout)();
     return new Error("Session Expired. Please Login.");
   }
 

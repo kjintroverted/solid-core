@@ -35,7 +35,7 @@ const muiTheme = (0, _styles.createTheme)({
 });
 exports.muiTheme = muiTheme;
 
-const Column = _styledComponents.default.div(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n  height: 100%;\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  justify-content: ", ";\n  align-items: ", ";\n"])), props => props.justify, props => props.align);
+const Column = _styledComponents.default.div(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n  height: 100%;\n  width: ", ";\n  display: flex;\n  flex-direction: column;\n  justify-content: ", ";\n  align-items: ", ";\n"])), props => props.width, props => props.justify, props => props.align);
 
 exports.Column = Column;
 
