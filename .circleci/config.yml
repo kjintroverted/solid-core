@@ -26,10 +26,7 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
       - run: 
             name: "NPM Increment and Publish"
-            command: |
-            VERSION=$(npm version patch)
-            npm publish
-      - run: git push origin v$VERSION
+            command: VERSION=$(npm version patch) && npm publish && git push origin v$VERSION
 
 workflows:
   version: 2
