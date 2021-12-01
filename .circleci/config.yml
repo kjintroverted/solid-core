@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: cimg/node:15.5.1-browsers
-    working_directory: ~/solid-core
+    working_directory: ~/repo
     steps:
       - checkout
       - run: npm i
@@ -12,7 +12,7 @@ jobs:
   deploy:
     docker:
       - image: cimg/node:15.5.1-browsers
-    working_directory: ~/solid-core
+    working_directory: ~/repo
     steps:
       - checkout
       - add_ssh_keys:
@@ -23,6 +23,7 @@ jobs:
       - run: git config user.email "wkgreen13@gmail.com"
       - run: git config user.name "CircleCI"
       - run: VERSION=$(npm version patch)
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ./repo/.npmrc
       - run: npm publish
       - run: git push origin v$VERSION
 
