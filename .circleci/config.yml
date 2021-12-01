@@ -20,10 +20,17 @@ jobs:
             - "64:67:55:e8:04:c6:63:d2:aa:d3:c7:e8:cf:17:6d:0f"
       - run: npm i
       - run: npm run build
+<<<<<<< HEAD
       - run: git config user.email "wkgreen13@gmail.com"
       - run: git config user.name "CircleCI"
       - run: git checkout -b release
       - run: npm version patch
+=======
+      - run: git checkout -b release
+      - run: npm version patch
+      - run: git config user.email "wkgreen13@gmail.com"
+      - run: git config user.name "CircleCI"
+>>>>>>> ed90c38408f5c5278055a899a22261d4193f9e2e
       - run: git commit -m "CI Deploy"
       - run: git push -u origin release
 
