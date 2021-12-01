@@ -7,13 +7,12 @@ jobs:
     steps:
       - checkout
       - run: npm i
-      # Add Tests
       - run: npm run build
 
   deploy:
     docker:
       - image: cimg/node:15.5.1-browsers
-    working_directory: ~/solid-kitchen
+    working_directory: ~/solid-core
     steps:
       - checkout
       - add_ssh_keys:
