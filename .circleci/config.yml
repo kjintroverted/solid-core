@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: cimg/node:15.5.1-browsers
+    working_directory: ~/solid-core
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run build
+
+  deploy:
+    docker:
+      - image: cimg/node:15.5.1-browsers
+    working_directory: ~/solid-core
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "64:67:55:e8:04:c6:63:d2:aa:d3:c7:e8:cf:17:6d:0f"
+      - run: npm i
+      - run: npm run build
+      - run: git checkout -b release
+      - run: npm version patch
+      - run: git config user.email "wkgreen13@gmail.com"
+      - run: git config user.name "CircleCI"
+      - run: git commit -m "CI Deploy"
+      - run: git push -u origin release
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          filters:
+            branches:
+              only: master
