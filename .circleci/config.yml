@@ -23,8 +23,8 @@ jobs:
       - run: git config user.email "wkgreen13@gmail.com"
       - run: git config user.name "CircleCI"
       - run: git checkout -b release
-      - run: npm version patch
-      - run: git push -u origin release
+      - run: VERSION=$(npm version patch)
+      - run: git push -u origin $VERSION
 
 workflows:
   version: 2
