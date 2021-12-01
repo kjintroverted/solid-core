@@ -23,7 +23,7 @@ jobs:
       - run: git config user.email "wkgreen13@gmail.com"
       - run: git config user.name "CircleCI"
       - run: VERSION=$(npm version patch)
-      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ./repo/.npmrc
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
       - run: npm publish
       - run: git push origin v$VERSION
 
