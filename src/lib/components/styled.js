@@ -20,6 +20,17 @@ export const muiTheme = createTheme({
   }
 })
 
+export const newTheme = (t = THEME) => createTheme({
+  palette: {
+    primary: {
+      main: t.primary,
+    },
+    secondary: {
+      main: t.secondary,
+    }
+  }
+})
+
 export const Column = styled.div`
   height: 100%;
   width: ${ props => props.width };
@@ -56,8 +67,8 @@ export const Spacer = styled.span`
 export const Main = styled.div`
   height: 100%;
   width: 100%;
-  background: ${ THEME.light };
-  color: ${ THEME.dark };
+  background: ${ props => props.theme ? props.theme.light : THEME.light };
+  color: ${ props => props.theme ? props.theme.dark : THEME.dark };
 `
 
 export const HeaderBar = styled.div`
@@ -67,8 +78,8 @@ export const HeaderBar = styled.div`
   height: 5em;
   display: flex;
   align-items: center;
-  background: ${ THEME.primary };
-  color: ${ THEME.light };
+  background: ${ props => props.theme ? props.theme.primary : THEME.primary };
+  color: ${ props => props.theme ? props.theme.light : THEME.light };
   margin-bottom: .5em;
   & * {
     margin: 0em .5em;
@@ -81,13 +92,13 @@ export const BigBar = styled.div`
   height: 12em;
   display: flex;
   align-items: center;
-  background: ${ THEME.primary };
-  color: ${ THEME.light };
+  background: ${ props => props.theme ? props.theme.primary : THEME.primary };
+  color: ${ props => props.theme ? props.theme.light : THEME.light };
   & * {
     margin: 0em .5em;
   }
   & input {
-    color: ${ THEME.light };
+    color: ${ props => props.theme ? props.theme.light : THEME.light };
     font-size: larger;
   }
   & .material-icons {
@@ -121,7 +132,7 @@ export const Card = styled.div`
   padding: 10px;
   display: flex;
   flex-direction: column;
-  margin-top: .5em;
+  margin: .5em 0em;
 `
 
 export const ActionBar = styled.div`
@@ -146,6 +157,10 @@ export const Subtitle = styled.h4`
   font-weight: 200;
 `
 
+export const CardHeader = styled.h3`
+  margin: 0;
+`
+
 export const CardContent = styled.span`
 `
 
@@ -156,8 +171,9 @@ export const Label = styled.span`
 
 export const Divider = styled.hr`
   width: 100%;
-  border-color: ${ THEME.light };
+  border-color: ${ props => props.theme ? props.theme.light : THEME.light };
   border-style: solid;
+  border-bottom-width: ${ props => props.thin ? '0px' : '1px' }
 `
 
 export const SaveButton = styled.div`
@@ -187,11 +203,20 @@ export const SideBar = styled.div`
 export const SimpleBucket = styled.h2`
   flex: 1;
   justify-content: space-around;
-  border: 5px dashed ${ THEME.dark };
+  border: 5px dashed ${ props => props.theme ? props.theme.dark : THEME.dark };
   text-align: center;
   margin: 3px;
   opacity: .5;
   &.match {
-    background-color: ${ THEME.primary };
+    background-color: ${ props => props.theme ? props.theme.primary : THEME.primary };
+  }
+`
+
+export const Icon = styled.span`
+  font-size: 1.3em;
+  color: ${ THEME.primary };
+  padding-top: 3px;
+  &:hover {
+    cursor: pointer;
   }
 `

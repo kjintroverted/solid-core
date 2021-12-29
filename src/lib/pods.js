@@ -72,6 +72,10 @@ export function newThing(name) {
 }
 
 export function setAttr(thing, attribute, value) {
+  if (!attribute) {
+    console.info("Skipping assignment. No struct attribute found.");
+    return null;
+  }
   thing = attribute.set(thing, attribute.predicate, value)
   return thing;
 }

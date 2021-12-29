@@ -2,7 +2,6 @@ import React from 'react';
 import {
   addToUpdateQueue,
   setAttr,
-  BigBar,
   BigIconHeader,
   Column,
   SaveButton,
@@ -10,13 +9,16 @@ import {
   profileStruct
 } from "..";
 
+import { BigBar } from './styled';
+
 const Profile = ({
   profile,
   edit,
   toggleEdit,
   onChange,
   saveState,
-  ui
+  ui,
+  theme
 }) => {
 
   function updateField(field) {
@@ -39,8 +41,8 @@ const Profile = ({
 
   return (
     <>
-      <BigBar>
-        <BigIconHeader className="material-icons">account_circle</BigIconHeader>
+      <BigBar theme={ theme }>
+        <BigIconHeader theme={ theme } className="material-icons">account_circle</BigIconHeader>
         <Column justify="center">
           { !edit ?
             <h2 style={ { margin: 0 } }>
@@ -92,7 +94,7 @@ const Profile = ({
           onChange={ updateField("email") } />
         {
           !!saveState.queue.length &&
-          <SaveButton>
+          <SaveButton theme={ theme }>
             <ui.Button
               variant="contained"
               color="secondary"
