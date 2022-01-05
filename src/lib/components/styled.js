@@ -112,8 +112,8 @@ export const BigIconHeader = styled.span`
 `
 
 export const Pane = styled.div`
-  width: 25vw;
-  min-width: 350px;
+  width: ${ props => props.width ? props.width : '25vw' };
+  min-width: 370px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -125,7 +125,7 @@ export const Pane = styled.div`
 export const Card = styled.div`
   width: 90%;
   min-height: 100px;
-  max-width: 350px;
+  max-width:  ${ props => props.maxWidth ? props.width : '350px' };
   background-color: white;
   box-shadow: rgb(91 83 72 / 10%) 2px 2px 10px;
   border-radius: 3px;
@@ -214,7 +214,7 @@ export const SimpleBucket = styled.h2`
 
 export const Icon = styled.span`
   font-size: 1.3em;
-  color: ${ THEME.primary };
+  color: ${ props => props.theme ? props.theme.primary : THEME.primary };
   padding-top: 3px;
   &:hover {
     cursor: pointer;

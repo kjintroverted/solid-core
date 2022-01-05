@@ -69,6 +69,9 @@ const Profile = ({
           <ui.IconButton color="inherit" href="https://kitchen.wkgreen.dev">
             <span className="material-icons large">kitchen</span>
           </ui.IconButton>
+          <ui.IconButton color="inherit" href="https://budget.wkgreen.dev">
+            <span className="material-icons large">paid</span>
+          </ui.IconButton>
         </Column>
       </BigBar>
       <Column align="center">
