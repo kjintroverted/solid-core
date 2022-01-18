@@ -66,8 +66,8 @@ export async function loadThing(url, struct) {
   return { ...datum, thing };
 }
 
-export function newThing(name) {
-  let id = `${ name }-${ nanoid() }`;
+export function newThing(name, simpleNaming) {
+  let id = simpleNaming ? name : `${ name }-${ nanoid() }`;
   return createThing({ name: id })
 }
 
