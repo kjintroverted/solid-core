@@ -16,11 +16,11 @@ import React from "react";
 
 let appDataSetURL;
 
-export async function appLogin() {
+export async function appLogin(client) {
   await login({
     oidcIssuer: "https://inrupt.net",
     redirectUrl: window.location.href,
-    clientName: "Solid Movies"
+    clientName: client ? client : "wkgreen.dev"
   });
 }
 
