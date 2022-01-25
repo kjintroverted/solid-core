@@ -51,7 +51,22 @@ export function getThings(dataset) {
   return getThingAll(dataset)
 }
 
-export function loadThing(dataset, url, struct) {
+export function loadFromDataset(dataset, url, struct) {
+  const thing = getThing(dataset, url)
+  let datum = {};
+  for (let field in struct) {
+    let attribute = struct[field]
+    datum[field] = attribute.parse(thing, attribute.predicate)
+  }
+  return { ...datum, thing };
+}
+
+export async function loadThing(url, struct) {
+  if (!getDefaultSession().info.isLoggedIn) {
+    await logout()
+    return new Error("Session Expired. Please Login.");
+  }
+  const dataset = await getSolidDataset(url.split('#')[0], { fetch })
   const thing = getThing(dataset, url)
   let datum = {};
   for (let field in struct) {
