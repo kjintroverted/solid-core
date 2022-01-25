@@ -30,11 +30,10 @@ const Profile = ({
   }
 
   function updateName({ target }) {
-    let [firstName = '', lastName = ''] = target.value.split(' ');
-    let t = setAttr(profile.thing, profileStruct['firstName'], firstName)
-    t = setAttr(t, profileStruct['lastName'], lastName)
+    let name = target.value;
+    let t = setAttr(profile.thing, profileStruct['name'], name)
     saveState.updateQueue(addToUpdateQueue(saveState.queue, t))
-    onChange({ ...profile, thing: t, firstName, lastName });
+    onChange({ ...profile, thing: t, name });
   }
 
   if (!profile) return <></>
@@ -46,13 +45,13 @@ const Profile = ({
         <Column justify="center">
           { !edit ?
             <h2 style={ { margin: 0 } }>
-              { profile.firstName } { profile.lastName }
+              { profile.name }
               <span className="material-icons" onClick={ () => toggleEdit(!edit) }>edit</span>
             </h2>
             : <ui.Input
               type="text"
               placeholder="name"
-              defaultValue={ profile.firstName ? `${ profile.firstName } ${ profile.lastName }` : "" }
+              defaultValue={ profile.name ? profile.name : "" }
               endAdornment={
                 <ui.InputAdornment position="end">
                   <ui.IconButton onClick={ () => toggleEdit(!edit) } color="inherit">

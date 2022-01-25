@@ -32,23 +32,21 @@ export const newTheme = (t = THEME) => createTheme({
 })
 
 export const Column = styled.div`
-  height: 100%;
+  height: ${ props => props.height ? props.height : '100%' };
   width: ${ props => props.width };
   display: flex;
   flex-direction: column;
   justify-content: ${ props => props.justify };
   align-items: ${ props => props.align };
-`
+  `
 
 export const Row = styled.div`
-  width: 100%;
+  width: ${ props => props.width ? props.width : '100%' };
+  height: ${ props => props.height };
   display: flex;
   justify-content: ${ props => props.justify };
   align-items: ${ props => props.align };
   flex-wrap: ${ props => props.wrap };
-  & * {
-    margin: 0px 5px;
-  }
   & .flex-50 {
     flex: .5;
   }
@@ -135,6 +133,7 @@ export const Card = styled.div`
   display: flex;
   flex-direction: column;
   margin: .5em 0em;
+  overflow: hidden;
 `
 
 export const ActionBar = styled.div`
@@ -175,7 +174,7 @@ export const Divider = styled.hr`
   width: 100%;
   border-color: ${ props => props.theme ? props.theme.light : THEME.light };
   border-style: solid;
-  border-bottom-width: ${ props => props.thin ? '0px' : '1px' }
+  border-bottom-width: ${ props => props.thin ? '0px' : '1px' };
 `
 
 export const SideBar = styled.div`
@@ -213,5 +212,20 @@ export const Icon = styled.span`
   padding-top: 3px;
   &:hover {
     cursor: pointer;
+  }
+`
+
+export const Frame = styled.div`
+  overflow: hidden;
+  width: ${ props => props.width };
+  height: ${ props => props.height };
+  position: ${ props => props.position };
+  top: ${ props => props.top };
+  left: ${ props => props.left };
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: ${ props => props.fit };
+    object-position: ${ props => props.focusX + " " + props.focusY };
   }
 `

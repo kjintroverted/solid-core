@@ -82,6 +82,10 @@ export function setAttr(thing, attribute, value) {
 
 export function setAllAttr(thing, struct, data) {
   for (let attr in struct) {
+    if (!struct[attr]) {
+      console.info(`Skipping assignment. No struct attribute found for ${ attr }.`);
+      continue;
+    }
     thing = struct[attr].set(
       thing,
       struct[attr].predicate,
@@ -92,12 +96,7 @@ export function setAllAttr(thing, struct, data) {
 
 export async function initThing(name, data, struct) {
   let thing = newThing(name);
-  for (let attr in data) {
-    thing = struct[attr].set(
-      thing,
-      struct[attr].predicate,
-      data[attr]);
-  }
+  thing = setAllAttr(thing, struct, data);
   let url = await saveThing(thing);
   thing = loadThing(url, struct);
   return thing;
