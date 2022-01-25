@@ -4,11 +4,10 @@ import {
   setAttr,
   BigIconHeader,
   Column,
-  SaveButton,
   Spacer,
   profileStruct
 } from "..";
-
+import SaveButton from './SaveButton';
 import { BigBar } from './styled';
 
 const Profile = ({
@@ -21,10 +20,12 @@ const Profile = ({
   theme
 }) => {
 
+  const { queue, updateQueue, saveFromQ } = saveState;
+
   function updateField(field) {
     return ({ target }) => {
       let t = setAttr(profile.thing, profileStruct[field], target.value);
-      saveState.updateQueue(addToUpdateQueue(saveState.queue, t))
+      updateQueue(addToUpdateQueue(queue, t))
       onChange({ ...profile, thing: t, [field]: target.value })
     }
   }
@@ -32,7 +33,7 @@ const Profile = ({
   function updateName({ target }) {
     let name = target.value;
     let t = setAttr(profile.thing, profileStruct['name'], name)
-    saveState.updateQueue(addToUpdateQueue(saveState.queue, t))
+    updateQueue(addToUpdateQueue(queue, t))
     onChange({ ...profile, thing: t, name });
   }
 
@@ -94,17 +95,7 @@ const Profile = ({
             </ui.InputAdornment>
           }
           onChange={ updateField("email") } />
-        {
-          !!saveState.queue.length &&
-          <SaveButton theme={ theme }>
-            <ui.Button
-              variant="contained"
-              color="secondary"
-              onClick={ saveState.saveFromQ }>
-              Save
-            </ui.Button>
-          </SaveButton>
-        }
+        <SaveButton ui={ ui } save={ saveFromQ } queue={ queue } />
       </Column>
     </>)
 }
