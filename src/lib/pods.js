@@ -58,7 +58,7 @@ export function loadFromDataset(dataset, url, struct) {
     let attribute = struct[field]
     datum[field] = attribute.parse(thing, attribute.predicate)
   }
-  return { ...datum, thing };
+  return { ...datum, thing, struct };
 }
 
 export async function loadThing(url, struct) {
@@ -73,7 +73,7 @@ export async function loadThing(url, struct) {
     let attribute = struct[field]
     datum[field] = attribute.parse(thing, attribute.predicate)
   }
-  return { ...datum, thing };
+  return { ...datum, thing, struct };
 }
 
 export function newThing(name, simpleNaming) {
@@ -90,7 +90,8 @@ export function setAttr(thing, attribute, value) {
   return thing;
 }
 
-export function setAllAttr(thing, struct, data) {
+export function setAllAttr(thing, data) {
+  const { struct } = data;
   for (let attr in struct) {
     if (!struct[attr]) {
       console.info(`Skipping assignment. No struct attribute found for ${ attr }.`);
