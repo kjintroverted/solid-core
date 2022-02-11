@@ -61,6 +61,32 @@ export function loadFromDataset(dataset, url, struct) {
   return { ...datum, thing, struct };
 }
 
+export function loadByName(dataset, name, struct) {
+  const thing = getThings(dataset).find(nameFilter(name))
+  if (!thing) {
+    console.info(`No things with name "${ name }" found.`)
+    return null
+  }
+  let datum = {};
+  for (let field in struct) {
+    let attribute = struct[field]
+    datum[field] = attribute.parse(thing, attribute.predicate)
+  }
+  return { ...datum, thing, struct };
+}
+
+export function loadAllByName(dataset, name, struct) {
+  const things = getThings(dataset).filter(nameFilter(name))
+  return things.map(t => {
+    let datum = {};
+    for (let field in struct) {
+      let attribute = struct[field]
+      datum[field] = attribute.parse(t, attribute.predicate)
+    }
+    return { ...datum, thing, struct }
+  })
+}
+
 export async function loadThing(url, struct) {
   if (!getDefaultSession().info.isLoggedIn) {
     await logout()
