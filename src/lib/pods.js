@@ -122,7 +122,7 @@ export async function initThing(name, data, struct) {
   let thing = newThing(name);
   thing = setAllAttr(thing, struct, data);
   let url = await saveThing(thing);
-  thing = loadThing(url, struct);
+  thing = await loadThing(url, struct);
   return thing;
 }
 
@@ -131,6 +131,7 @@ export async function saveThing(thing) {
   let dataset = await getSolidDataset(dataURL, { fetch })
   dataset = setThing(dataset, thing);
   dataset = await saveSolidDatasetAt(dataURL, dataset, { fetch })
+  console.debug(dataURL)
   console.debug(dataset)
   return isTemp(thing.url) ?
     appDataSetURL + "#" + getThingNameFromTempURL(thing.url)
