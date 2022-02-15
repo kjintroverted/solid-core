@@ -53,6 +53,9 @@ export function getThings(dataset) {
 
 export function loadFromDataset(dataset, url, struct) {
   const thing = getThing(dataset, url)
+  if (!thing) {
+    console.error(`Cannot find ${ url } in dataset.`, dataset);
+  }
   let datum = {};
   for (let field in struct) {
     let attribute = struct[field]
@@ -67,26 +70,14 @@ export function loadByName(dataset, name, struct) {
     console.info(`No things with name "${ name }" found.`)
     return null
   }
-  let datum = {};
-  for (let field in struct) {
-    let attribute = struct[field]
-    datum[field] = attribute.parse(thing, attribute.predicate)
-  }
-  return { ...datum, thing, struct };
+  return loadFromDataset(dataset, thing.url, struct)
 }
 
 export function loadAllByName(dataset, name, struct) {
   const things = getThings(dataset)
   return things
     .filter(nameFilter(name))
-    .map(t => {
-      let datum = {};
-      for (let field in struct) {
-        let attribute = struct[field]
-        datum[field] = attribute.parse(t, attribute.predicate)
-      }
-      return { ...datum, t, struct }
-    })
+    .map(t => loadFromDataset(dataset, t.url, struct))
 }
 
 export async function loadThing(url, struct) {
@@ -95,13 +86,7 @@ export async function loadThing(url, struct) {
     return new Error("Session Expired. Please Login.");
   }
   const dataset = await getSolidDataset(url.split('#')[0], { fetch })
-  const thing = getThing(dataset, url)
-  let datum = {};
-  for (let field in struct) {
-    let attribute = struct[field]
-    datum[field] = attribute.parse(thing, attribute.predicate)
-  }
-  return { ...datum, thing, struct };
+  return loadFromDataset(dataset, url, struct);
 }
 
 export function newThing(name, simpleNaming) {
@@ -145,7 +130,8 @@ export async function saveThing(thing) {
   const dataURL = isTemp(thing.url) ? appDataSetURL : resourceURL(thing.url);
   let dataset = await getSolidDataset(dataURL, { fetch })
   dataset = setThing(dataset, thing);
-  await saveSolidDatasetAt(dataURL, dataset, { fetch })
+  dataset = await saveSolidDatasetAt(dataURL, dataset, { fetch })
+  console.debug(dataset)
   return isTemp(thing.url) ?
     appDataSetURL + "#" + getThingNameFromTempURL(thing.url)
     : thing.url;
