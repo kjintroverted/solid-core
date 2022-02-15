@@ -76,15 +76,17 @@ export function loadByName(dataset, name, struct) {
 }
 
 export function loadAllByName(dataset, name, struct) {
-  const things = getThings(dataset).filter(nameFilter(name))
-  return things.map(t => {
-    let datum = {};
-    for (let field in struct) {
-      let attribute = struct[field]
-      datum[field] = attribute.parse(t, attribute.predicate)
-    }
-    return { ...datum, thing, struct }
-  })
+  const things = getThings(dataset)
+  return things
+    .filter(nameFilter(name))
+    .map(t => {
+      let datum = {};
+      for (let field in struct) {
+        let attribute = struct[field]
+        datum[field] = attribute.parse(t, attribute.predicate)
+      }
+      return { ...datum, t, struct }
+    })
 }
 
 export async function loadThing(url, struct) {
