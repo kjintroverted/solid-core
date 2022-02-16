@@ -55,6 +55,7 @@ export function loadFromDataset(dataset, url, struct) {
   const thing = getThing(dataset, url)
   if (!thing) {
     console.error(`Cannot find ${ url } in dataset.`, dataset);
+    return { thing }
   }
   let datum = {};
   for (let field in struct) {
