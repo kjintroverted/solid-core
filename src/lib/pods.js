@@ -120,7 +120,7 @@ export function setAllAttr(thing, data) {
 
 export async function initThing(name, data, struct) {
   let thing = newThing(name);
-  thing = setAllAttr(thing, struct, data);
+  thing = setAllAttr(thing, { ...data, struct });
   let url = await saveThing(thing);
   thing = await loadThing(url, struct);
   return thing;
