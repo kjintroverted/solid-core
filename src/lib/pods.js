@@ -131,8 +131,6 @@ export async function saveThing(thing) {
   let dataset = await getSolidDataset(dataURL, { fetch })
   dataset = setThing(dataset, thing);
   dataset = await saveSolidDatasetAt(dataURL, dataset, { fetch })
-  console.debug(dataURL)
-  console.debug(dataset)
   return isTemp(thing.url) ?
     appDataSetURL + "#" + getThingNameFromTempURL(thing.url)
     : thing.url;
