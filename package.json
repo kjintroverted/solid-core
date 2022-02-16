@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
-    "@inrupt/solid-client": "^1.17.0",
+    "@inrupt/solid-client": "^1.19.0",
     "@inrupt/solid-client-authn-browser": "^1.11.2",
     "@inrupt/vocab-common-rdf": "^1.0.3",
     "react": "^17.0.2",
