@@ -122,9 +122,9 @@ export function setAllAttr(thing, data) {
 export async function initThing(name, data, struct) {
   let thing = newThing(name);
   thing = setAllAttr(thing, { ...data, struct });
-  let { saved: url } = await saveThing(thing);
+  let { dataset, saved: url } = await saveThing(thing);
   thing = await loadThing(url, struct);
-  return thing;
+  return { dataset, thing };
 }
 
 export async function saveThing(thing, dataset) {
