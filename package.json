@@ -1,6 +1,6 @@
 {
   "name": "solid-core",
-  "version": "1.6.16",
+  "version": "1.7.0",
   "private": false,
   "main": "dist/index.js",
   "module": "dist/index.js",

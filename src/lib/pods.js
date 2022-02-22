@@ -122,27 +122,30 @@ export function setAllAttr(thing, data) {
 export async function initThing(name, data, struct) {
   let thing = newThing(name);
   thing = setAllAttr(thing, { ...data, struct });
-  let url = await saveThing(thing);
+  let { saved: url } = await saveThing(thing);
   thing = await loadThing(url, struct);
   return thing;
 }
 
-export async function saveThing(thing) {
-  const dataURL = isTemp(thing.url) ? appDataSetURL : resourceURL(thing.url);
-  let dataset = await getSolidDataset(dataURL, { fetch })
+export async function saveThing(thing, dataset) {
+  if (!dataset) {
+    const dataURL = isTemp(thing.url) ? appDataSetURL : resourceURL(thing.url);
+    dataset = await getSolidDataset(dataURL, { fetch })
+  }
   dataset = setThing(dataset, thing);
   dataset = await saveSolidDatasetAt(dataURL, dataset, { fetch })
-  return isTemp(thing.url) ?
+  let url = isTemp(thing.url) ?
     appDataSetURL + "#" + getThingNameFromTempURL(thing.url)
     : thing.url;
+  return { dataset, saved: url }
 }
 
 export async function deleteThing(thing) {
   const dataURL = resourceURL(thing.url);
   let dataset = await getSolidDataset(dataURL, { fetch })
   dataset = removeThing(dataset, thing);
-  await saveSolidDatasetAt(dataURL, dataset, { fetch })
-  return dataset;
+  dataset = await saveSolidDatasetAt(dataURL, dataset, { fetch })
+  return { dataset, deleted: dataURL };
 }
 
 export function getDomain(url) {
@@ -190,9 +193,15 @@ export function addToUpdateQueue(q, thing) {
 }
 
 export async function save(q) {
-  let res = await Promise.all(q.map(saveThing));
-  console.log("Saved:", res);
-  return true;
+  let res = [];
+  let dataset;
+  for (let thing in q) {
+    let updateData = await saveThing(thing, dataset);
+    dataset = updateData.dataset;
+    res = [...res, updateData.saved]
+  }
+  console.log("Saved:", res.map(r => r.saved));
+  return dataset;
 }
 
 export const SaveState = React.createContext({
