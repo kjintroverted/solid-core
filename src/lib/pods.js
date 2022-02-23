@@ -106,7 +106,7 @@ export function setAttr(thing, attribute, value) {
 
 export function setAllAttr(thing, data) {
   const { struct } = data;
-  for (let attr in struct) {
+  for (let attr in data) {
     if (!struct[attr]) {
       console.info(`Skipping assignment. No struct attribute found for ${ attr }.`);
       continue;
@@ -128,8 +128,8 @@ export async function initThing(name, data, struct) {
 }
 
 export async function saveThing(thing, dataset) {
+  const dataURL = isTemp(thing.url) ? appDataSetURL : resourceURL(thing.url);
   if (!dataset) {
-    const dataURL = isTemp(thing.url) ? appDataSetURL : resourceURL(thing.url);
     dataset = await getSolidDataset(dataURL, { fetch })
   }
   dataset = setThing(dataset, thing);
@@ -195,12 +195,12 @@ export function addToUpdateQueue(q, thing) {
 export async function save(q) {
   let res = [];
   let dataset;
-  for (let thing in q) {
-    let updateData = await saveThing(thing, dataset);
+  for (let i in q) {
+    let updateData = await saveThing(q[i], dataset);
     dataset = updateData.dataset;
     res = [...res, updateData.saved]
   }
-  console.log("Saved:", res.map(r => r.saved));
+  console.log("Saved:", res);
   return dataset;
 }
 
