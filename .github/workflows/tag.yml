@@ -12,4 +12,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - run: cd ${{github.workspace}}
-      - run: ls -la
+      - name: Tag
+        run: npm run tag
+      - name: List Tags
+        run: git tag
+
