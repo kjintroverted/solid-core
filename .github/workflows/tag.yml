@@ -1,8 +1,5 @@
 name: Tag Release
-on:
-  push:
-    branches:
-      - master
+on: [push]
 jobs:
   Build:
     runs-on: macos-latest
@@ -16,4 +13,3 @@ jobs:
         run: npm run tag
       - name: List Tags
         run: git tag
-
