@@ -1,7 +1,7 @@
 name: NPM Publish
 on: [pull_request]
 jobs:
-  Build:
+  Publish:
     runs-on: macos-latest
     steps:
       - name: Setup Node
@@ -13,3 +13,5 @@ jobs:
         run: npm i
       - name: Build
         run: npm run build
+      - name: Publish
+        run: npm publish
