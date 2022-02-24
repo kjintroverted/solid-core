@@ -2,13 +2,8 @@ import { getStringNoLocale, setStringNoLocale } from "@inrupt/solid-client";
 import { FOAF, VCARD } from "@inrupt/vocab-common-rdf";
 
 const profileStruct = {
-  firstName: {
-    predicate: FOAF.firstName,
-    parse: getStringNoLocale,
-    set: setStringNoLocale
-  },
-  lastName: {
-    predicate: FOAF.lastName,
+  name: {
+    predicate: FOAF.name,
     parse: getStringNoLocale,
     set: setStringNoLocale
   },

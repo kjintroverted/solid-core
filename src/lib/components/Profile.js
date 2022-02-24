@@ -2,13 +2,13 @@ import React from 'react';
 import {
   addToUpdateQueue,
   setAttr,
-  BigBar,
   BigIconHeader,
   Column,
-  SaveButton,
   Spacer,
   profileStruct
 } from "..";
+import SaveButton from './SaveButton';
+import { BigBar } from './styled';
 
 const Profile = ({
   profile,
@@ -16,41 +16,43 @@ const Profile = ({
   toggleEdit,
   onChange,
   saveState,
-  ui
+  ui,
+  theme
 }) => {
+
+  const { queue, updateQueue, saveFromQ } = saveState;
 
   function updateField(field) {
     return ({ target }) => {
       let t = setAttr(profile.thing, profileStruct[field], target.value);
-      saveState.updateQueue(addToUpdateQueue(saveState.queue, t))
+      updateQueue(addToUpdateQueue(queue, t))
       onChange({ ...profile, thing: t, [field]: target.value })
     }
   }
 
   function updateName({ target }) {
-    let [firstName = '', lastName = ''] = target.value.split(' ');
-    let t = setAttr(profile.thing, profileStruct['firstName'], firstName)
-    t = setAttr(t, profileStruct['lastName'], lastName)
-    saveState.updateQueue(addToUpdateQueue(saveState.queue, t))
-    onChange({ ...profile, thing: t, firstName, lastName });
+    let name = target.value;
+    let t = setAttr(profile.thing, profileStruct['name'], name)
+    updateQueue(addToUpdateQueue(queue, t))
+    onChange({ ...profile, thing: t, name });
   }
 
   if (!profile) return <></>
 
   return (
     <>
-      <BigBar>
-        <BigIconHeader className="material-icons">account_circle</BigIconHeader>
+      <BigBar theme={ theme }>
+        <BigIconHeader theme={ theme } className="material-icons">account_circle</BigIconHeader>
         <Column justify="center">
           { !edit ?
             <h2 style={ { margin: 0 } }>
-              { profile.firstName } { profile.lastName }
+              { profile.name }
               <span className="material-icons" onClick={ () => toggleEdit(!edit) }>edit</span>
             </h2>
             : <ui.Input
               type="text"
               placeholder="name"
-              defaultValue={ profile.firstName ? `${ profile.firstName } ${ profile.lastName }` : "" }
+              defaultValue={ profile.name ? profile.name : "" }
               endAdornment={
                 <ui.InputAdornment position="end">
                   <ui.IconButton onClick={ () => toggleEdit(!edit) } color="inherit">
@@ -66,6 +68,9 @@ const Profile = ({
         <Column justify="flex-end">
           <ui.IconButton color="inherit" href="https://kitchen.wkgreen.dev">
             <span className="material-icons large">kitchen</span>
+          </ui.IconButton>
+          <ui.IconButton color="inherit" href="https://budget.wkgreen.dev">
+            <span className="material-icons large">paid</span>
           </ui.IconButton>
         </Column>
       </BigBar>
@@ -90,17 +95,7 @@ const Profile = ({
             </ui.InputAdornment>
           }
           onChange={ updateField("email") } />
-        {
-          !!saveState.queue.length &&
-          <SaveButton>
-            <ui.Button
-              variant="contained"
-              color="secondary"
-              onClick={ saveState.saveFromQ }>
-              Save
-            </ui.Button>
-          </SaveButton>
-        }
+        <SaveButton ui={ ui } save={ saveFromQ } queue={ queue } />
       </Column>
     </>)
 }

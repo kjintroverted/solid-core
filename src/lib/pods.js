@@ -16,11 +16,11 @@ import React from "react";
 
 let appDataSetURL;
 
-export async function appLogin() {
+export async function appLogin(client) {
   await login({
     oidcIssuer: "https://inrupt.net",
     redirectUrl: window.location.href,
-    clientName: "Solid Movies"
+    clientName: client ? client : "wkgreen.dev"
   });
 }
 
@@ -51,33 +51,66 @@ export function getThings(dataset) {
   return getThingAll(dataset)
 }
 
+export function loadFromDataset(dataset, url, struct) {
+  const thing = getThing(dataset, url)
+  if (!thing) {
+    console.error(`Cannot find ${ url } in dataset.`, dataset);
+    return { thing }
+  }
+  let datum = {};
+  for (let field in struct) {
+    let attribute = struct[field]
+    datum[field] = attribute.parse(thing, attribute.predicate)
+  }
+  return { ...datum, thing, struct };
+}
+
+export function loadByName(dataset, name, struct) {
+  const thing = getThings(dataset).find(nameFilter(name))
+  if (!thing) {
+    console.info(`No things with name "${ name }" found.`)
+    return null
+  }
+  return loadFromDataset(dataset, thing.url, struct)
+}
+
+export function loadAllByName(dataset, name, struct) {
+  const things = getThings(dataset)
+  return things
+    .filter(nameFilter(name))
+    .map(t => loadFromDataset(dataset, t.url, struct))
+}
+
 export async function loadThing(url, struct) {
   if (!getDefaultSession().info.isLoggedIn) {
     await logout()
     return new Error("Session Expired. Please Login.");
   }
   const dataset = await getSolidDataset(url.split('#')[0], { fetch })
-  const thing = getThing(dataset, url)
-  let datum = {};
-  for (let field in struct) {
-    let attribute = struct[field]
-    datum[field] = attribute.parse(thing, attribute.predicate)
-  }
-  return { ...datum, thing };
+  return loadFromDataset(dataset, url, struct);
 }
 
-export function newThing(name) {
-  let id = `${ name }-${ nanoid() }`;
+export function newThing(name, simpleNaming) {
+  let id = simpleNaming ? name : `${ name }-${ nanoid() }`;
   return createThing({ name: id })
 }
 
 export function setAttr(thing, attribute, value) {
+  if (!attribute) {
+    console.info("Skipping assignment. No struct attribute found.");
+    return null;
+  }
   thing = attribute.set(thing, attribute.predicate, value)
   return thing;
 }
 
-export function setAllAttr(thing, struct, data) {
-  for (let attr in struct) {
+export function setAllAttr(thing, data) {
+  const { struct } = data;
+  for (let attr in data) {
+    if (!struct[attr]) {
+      console.info(`Skipping assignment. No struct attribute found for ${ attr }.`);
+      continue;
+    }
     thing = struct[attr].set(
       thing,
       struct[attr].predicate,
@@ -88,33 +121,31 @@ export function setAllAttr(thing, struct, data) {
 
 export async function initThing(name, data, struct) {
   let thing = newThing(name);
-  for (let attr in data) {
-    thing = struct[attr].set(
-      thing,
-      struct[attr].predicate,
-      data[attr]);
-  }
-  let url = await saveThing(thing);
-  thing = loadThing(url, struct);
-  return thing;
+  thing = setAllAttr(thing, { ...data, struct });
+  let { dataset, saved: url } = await saveThing(thing);
+  thing = await loadThing(url, struct);
+  return { dataset, thing };
 }
 
-export async function saveThing(thing) {
+export async function saveThing(thing, dataset) {
   const dataURL = isTemp(thing.url) ? appDataSetURL : resourceURL(thing.url);
-  let dataset = await getSolidDataset(dataURL, { fetch })
+  if (!dataset) {
+    dataset = await getSolidDataset(dataURL, { fetch })
+  }
   dataset = setThing(dataset, thing);
-  await saveSolidDatasetAt(dataURL, dataset, { fetch })
-  return isTemp(thing.url) ?
+  dataset = await saveSolidDatasetAt(dataURL, dataset, { fetch })
+  let url = isTemp(thing.url) ?
     appDataSetURL + "#" + getThingNameFromTempURL(thing.url)
     : thing.url;
+  return { dataset, saved: url }
 }
 
 export async function deleteThing(thing) {
   const dataURL = resourceURL(thing.url);
   let dataset = await getSolidDataset(dataURL, { fetch })
   dataset = removeThing(dataset, thing);
-  await saveSolidDatasetAt(dataURL, dataset, { fetch })
-  return dataset;
+  dataset = await saveSolidDatasetAt(dataURL, dataset, { fetch })
+  return { dataset, deleted: dataURL };
 }
 
 export function getDomain(url) {
@@ -162,9 +193,15 @@ export function addToUpdateQueue(q, thing) {
 }
 
 export async function save(q) {
-  let res = await Promise.all(q.map(saveThing));
+  let res = [];
+  let dataset;
+  for (let i in q) {
+    let updateData = await saveThing(q[i], dataset);
+    dataset = updateData.dataset;
+    res = [...res, updateData.saved]
+  }
   console.log("Saved:", res);
-  return true;
+  return dataset;
 }
 
 export const SaveState = React.createContext({
