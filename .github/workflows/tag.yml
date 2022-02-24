@@ -1,7 +1,7 @@
 name: Tag Release
 on: [push]
 jobs:
-  Build:
+  Tag:
     runs-on: macos-latest
     steps:
       - name: Setup Node
