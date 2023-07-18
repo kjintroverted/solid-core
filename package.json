@@ -2,9 +2,10 @@
   "name": "solid-core",
   "version": "1.8.8",
   "private": false,
-  "main": "src/index.js",
-  "module": "src/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "files": [
+    "dist",
     "README.md"
   ],
   "scripts": {
