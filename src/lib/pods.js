@@ -54,7 +54,7 @@ export function getThings(dataset) {
 export function loadFromDataset(dataset, url, struct) {
   const thing = getThing(dataset, url)
   if (!thing) {
-    console.error(`Cannot find ${ url } in dataset.`, dataset);
+    console.error(`Cannot find ${url} in dataset.`, dataset);
     return { thing }
   }
   let datum = {};
@@ -68,7 +68,7 @@ export function loadFromDataset(dataset, url, struct) {
 export function loadByName(dataset, name, struct) {
   const thing = getThings(dataset).find(nameFilter(name))
   if (!thing) {
-    console.info(`No things with name "${ name }" found.`)
+    console.info(`No things with name "${name}" found.`)
     return null
   }
   return loadFromDataset(dataset, thing.url, struct)
@@ -91,7 +91,7 @@ export async function loadThing(url, struct) {
 }
 
 export function newThing(name, simpleNaming) {
-  let id = simpleNaming ? name : `${ name }-${ nanoid() }`;
+  let id = simpleNaming ? name : `${name}-${nanoid()}`;
   return createThing({ name: id })
 }
 
@@ -108,7 +108,7 @@ export function setAllAttr(thing, data) {
   const { struct } = data;
   for (let attr in data) {
     if (!struct[attr]) {
-      console.info(`Skipping assignment. No struct attribute found for ${ attr }.`);
+      console.info(`Skipping assignment. No struct attribute found for ${attr}.`);
       continue;
     }
     thing = struct[attr].set(
@@ -127,7 +127,8 @@ export async function initThing(name, data, struct) {
   return { dataset, thing };
 }
 
-export async function saveThing(thing, dataset) {
+export async function saveThing(thing, dataset, options = {}) {
+  console.log("options", options);
   const dataURL = isTemp(thing.url) ? appDataSetURL : resourceURL(thing.url);
   if (!dataset) {
     dataset = await getSolidDataset(dataURL, { fetch })
